@@ -1,0 +1,52 @@
+#!bin/sh
+
+echo "-----------------"
+docker network create --driver=overlay traefik-public
+if [ $? -eq 0 ]; then
+    echo "traefik-public network created"
+else
+    echo "creating network traefik-public has failed"
+fi
+
+echo "-----------------"
+export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+echo "exported NODE_ID"
+
+echo "-----------------"
+docker node update --label-add portainer.portainer-data=true $NODE_ID
+if [ $? -eq 0 ]; then
+    echo "traefik bonded to this node succesfully"
+else
+    echo "bonding traefik has failed"
+    exit
+fi
+
+echo "-----------------"
+read -p "domain for Web Interface: " domain
+export DOMAIN=$domain
+echo "domain exported succesfully"
+
+echo "-----------------"
+sudo mkdir -p /data/portainer
+sudo curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/portainer-swarm -o /data/portainer/portainer.yml
+if [ $? -eq 0 ]; then
+    echo "compose-file downloaded to /data/portainer/portainer.yml succesfully"
+else
+    echo "downloading compose-file has failed"
+    exit
+fi
+
+
+echo "-----------------"
+docker stack deploy -c /data/portainer/portainer.yml portainer
+if [ $? -eq 0 ]; then
+    echo "portainer deployed on this swarm succesfully"
+else
+    echo "deploying portainer has failed"
+    exit
+fi
+
+echo "-----------------"
+echo "waiting for stack to come online"
+sleep 60
+docker stack ps portainer
