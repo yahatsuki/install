@@ -7,23 +7,23 @@ export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
 docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
 
 echo
-read -p "Email for Let's Encrypt?" email
+read -p "Email for Let's Encrypt: " email
 export EMAIL=$email
 
 echo 
-read -p "Domain for Web Interface?" domain
+read -p "Domain for Web Interface: " domain
 export DOMAIN=$domain
 
 echo
-read -p "Username for Web Interface?" username
+read -p "Username for Web Interface: " username
 export USERNAME=$username
 
 echo
-read -s "Password for Web Interface?" password
+read "Password for Web Interface: " password
 export PASSWORD=$password
 
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 
-curl -L https://raw.githubusercontent.com/yahatsuki/compose/traefik-swarm -o traefik.yml
+curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/traefik-swarm -o traefik.yml
 
 docker stack deploy -c traefik.yml traefik
