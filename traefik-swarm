@@ -23,23 +23,23 @@ fi
 
 
 echo "-----------------"
-read -p "email for Let's Encrypt: " email
+read -p "email for let's encrypt: " email
 export EMAIL=$email
 echo "email exported"
 
 echo "-----------------"
-read -p "domain for Web Interface: " domain
+read -p "domain for web interface: " domain
 export DOMAIN=$domain
 echo "domain exported succesfully"
 
 echo "-----------------"
-read -p "username for Web Interface: " username
+read -p "username for web interface: " username
 export USERNAME=$username
 echo "username exported succesfully"
 
 
 echo "-----------------"
-read -sp "password for Web Interface: " pswd
+read -sp "password for web interface: " pswd
 export PASSWORD=$pswd
 echo "password exported succesfully"
 
