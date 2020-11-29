@@ -1,23 +1,15 @@
 #!bin/sh
 
 echo "-----------------"
-docker network create --driver=overlay traefik-public
-if [ $? -eq 0 ]; then
-    echo "traefik-public network created"
-else
-    echo "creating network traefik-public has failed"
-fi
-
-echo "-----------------"
 export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
 echo "exported NODE_ID"
 
 echo "-----------------"
 docker node update --label-add portainer.portainer-data=true $NODE_ID
 if [ $? -eq 0 ]; then
-    echo "traefik bonded to this node succesfully"
+    echo "portainer bonded to this node succesfully"
 else
-    echo "bonding traefik has failed"
+    echo "bonding portainer has failed"
     exit
 fi
 
