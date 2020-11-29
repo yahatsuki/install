@@ -15,11 +15,11 @@ read -p "Domain for Web Interface?" domain
 export DOMAIN=$domain
 
 echo
-read -p "Username for Web Interface?" $username
+read -p "Username for Web Interface?" username
 export USERNAME=$username
 
 echo
-read -p "Password for Web Interface?" password
+read -s "Password for Web Interface?" password
 export PASSWORD=$password
 
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
