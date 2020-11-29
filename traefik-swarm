@@ -1,29 +1,74 @@
 #!bin/sh
 
+echo "-----------------"
 docker network create --driver=overlay traefik-public
+if [ $? -eq 0 ]; then
+    echo "traefik-public network created"
+else
+    echo "creating network traefik-public has failed"
+fi
 
+echo "-----------------"
 export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+echo "exported NODE_ID"
 
+echo "-----------------"
 docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+if [ $? -eq 0 ]; then
+    echo "traefik bonded to this node succesfully"
+else
+    echo "bonding traefik has failed"
+    exit
+fi
 
-echo
-read -p "Email for Let's Encrypt: " email
+
+echo "-----------------"
+read -p "email for Let's Encrypt: " email
 export EMAIL=$email
+echo "email exported"
 
-echo 
-read -p "Domain for Web Interface: " domain
+echo "-----------------"
+read -p "domain for Web Interface: " domain
 export DOMAIN=$domain
+echo "domain exported succesfully"
 
-echo
-read -p "Username for Web Interface: " username
+echo "-----------------"
+read -p "username for Web Interface: " username
 export USERNAME=$username
+echo "username exported succesfully"
 
-echo
-read "Password for Web Interface: " password
-export PASSWORD=$password
 
+echo "-----------------"
+read -sp "password for Web Interface: " pswd
+export PASSWORD=$pswd
+echo "password exported succesfully"
+
+echo "-----------------"
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
+echo "hashed_password exported succesfully"
 
-curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/traefik-swarm -o traefik.yml
+echo "-----------------"
+sudo mkdir -p /data/traefik
+sudo curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/traefik-swarm -o /data/traefik/traefik.yml
+if [ $? -eq 0 ]; then
+    echo "compose-file downloaded to /data/traefik/traefik.yml succesfully"
+else
+    echo "downloading compose-file has failed"
+    exit
+fi
 
-docker stack deploy -c traefik.yml traefik
+
+echo "-----------------"
+docker stack deploy -c /data/traefik/traefik.yml traefik
+if [ $? -eq 0 ]; then
+    echo "traefik deployed on this swarm succesfully"
+else
+    echo "deploying traefik has failed"
+    exit
+fi
+
+echo "-----------------"
+echo "waiting for stack to come online"
+sleep 60
+docker stack ps traefik
+
