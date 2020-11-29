@@ -14,7 +14,7 @@ else
 fi
 
 echo "-----------------"
-read -p "domain for Web Interface: " domain
+read -p "domain for web interface: " domain
 export DOMAIN=$domain
 echo "domain exported succesfully"
 
