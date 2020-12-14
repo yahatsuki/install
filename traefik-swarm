@@ -13,7 +13,7 @@ export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
 echo "exported NODE_ID"
 
 echo "-----------------"
-docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+docker node update --label-add traefik-public.public-certificates=true $NODE_ID
 if [ $? -eq 0 ]; then
     echo "traefik bonded to this node succesfully"
 else
