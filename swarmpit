@@ -21,7 +21,7 @@ echo "domain exported succesfully"
 
 echo "-----------------"
 sudo mkdir -p /data/swarmpit
-sudo curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/swarmpit-swarm -o /data/swarmpit/swarmpit.yml
+sudo curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/swarmpit -o /data/swarmpit/swarmpit.yml
 if [ $? -eq 0 ]; then
     echo "compose-file downloaded to /data/swarmpit/swarmpit.yml succesfully"
 else
