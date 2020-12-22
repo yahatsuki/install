@@ -1,0 +1,45 @@
+#!bin/sh
+
+echo "-----------------"
+export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+echo "exported NODE_ID"
+
+echo "-----------------"
+docker node update --label-add swarmpit.influx-data=true $NODE_ID
+docker node update --label-add swarmpit.db-data=true $NODE_ID
+if [ $? -eq 0 ]; then
+    echo "swarmpit bonded to this node succesfully"
+else
+    echo "bonding swarmpit has failed"
+    exit
+fi
+
+echo "-----------------"
+read -p "domain for web interface: " domain
+export DOMAIN=$domain
+echo "domain exported succesfully"
+
+echo "-----------------"
+sudo mkdir -p /data/swarmpit
+sudo curl -L https://raw.githubusercontent.com/yahatsuki/compose/main/swarmpit-swarm -o /data/swarmpit/swarmpit.yml
+if [ $? -eq 0 ]; then
+    echo "compose-file downloaded to /data/swarmpit/swarmpit.yml succesfully"
+else
+    echo "downloading compose-file has failed"
+    exit
+fi
+
+
+echo "-----------------"
+docker stack deploy -c /data/swarmpit/swarmpit.yml portainer
+if [ $? -eq 0 ]; then
+    echo "swarmpit deployed on this swarm succesfully"
+else
+    echo "deploying swarmpit has failed"
+    exit
+fi
+
+echo "-----------------"
+echo "waiting for stack to come online"
+sleep 60
+docker stack ps swarmpit
