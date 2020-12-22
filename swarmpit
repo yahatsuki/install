@@ -31,7 +31,7 @@ fi
 
 
 echo "-----------------"
-docker stack deploy -c /data/swarmpit/swarmpit.yml portainer
+docker stack deploy -c /data/swarmpit/swarmpit.yml swarmpit
 if [ $? -eq 0 ]; then
     echo "swarmpit deployed on this swarm succesfully"
 else
